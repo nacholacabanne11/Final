@@ -33,13 +33,23 @@ def crear_reserva(db: Session, reserva: ReservaCreate):
 
     
 def actualizar_reserva(db:Session, id:int, reserva:Reserva):
+  try:
     db_reserva= db.query(Reserva).filter(Reserva.id == id).first()
+    if verificar_reserva(db, reserva.cancha_id, reserva.dia, reserva.hora, reserva.duracion) is not None:
+        raise HTTPException(status_code=400, detail="La reserva ya existe para la cancha, día y hora especificados")
+    
     if db_reserva:
         for key, value in reserva.model_dump(exclude_unset=True).items():
             setattr(db_reserva, key, value)
             db.commit()
             db.refresh(db_reserva)
         return db_reserva
+  except HTTPException as http_exc:
+        raise http_exc
+  except Exception as e:
+        print(f"Error al crear reserva: {e}")
+        db.rollback()
+        raise e
     
 def eliminar_reserva(db:Session, id:int):
     db_reserva= db.query(Reserva).filter(Reserva.id == id).first()
