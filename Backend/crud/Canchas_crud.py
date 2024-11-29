@@ -37,3 +37,4 @@ def eliminar_cancha(db: Session, cancha_id: int):
         db.delete(db_cancha)
         db.commit()
         return db_cancha
+    
