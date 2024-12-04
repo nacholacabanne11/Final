@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -17,6 +17,8 @@ const Canchas = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
+  const createDialogRef = useRef(null);
+  const editDialogRef = useRef(null);
 
   useEffect(() => {
     const fetchCanchas = async () => {
@@ -32,6 +34,30 @@ const Canchas = () => {
 
     fetchCanchas();
   }, []);
+
+  const handleClickOutside = (event) => {
+    if (
+      isOpen &&
+      createDialogRef.current &&
+      !createDialogRef.current.contains(event.target)
+    ) {
+      setIsOpen(false);
+    }
+    if (
+      isEditOpen &&
+      editDialogRef.current &&
+      !editDialogRef.current.contains(event.target)
+    ) {
+      setIsEditOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, isEditOpen]);
 
   const handleCreate = async (nuevaCancha) => {
     try {
@@ -116,42 +142,44 @@ const Canchas = () => {
       </Table.Root>
 
       {/* Dialog para Crear Cancha */}
-      <DialogRoot
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        placement="center"
-        motionPreset="slide-in-bottom"
-      >
-        <DialogContent>
-          <DialogHeader>
-            Crear Cancha
-            <Button
-              onClick={() => setIsOpen(false)}
-              variant="link"
-              position="absolute"
-              top={2}
-              right={2}
-              color="gray.500"
-              _hover={{ color: "black" }}
-            >
-              X
-            </Button>
-          </DialogHeader>
-          <DialogBody>
-            <CrearCancha onCreate={handleCreate} />
-          </DialogBody>
-        </DialogContent>
-      </DialogRoot>
+      {isOpen && (
+        <DialogRoot
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          placement="center"
+          motionPreset="slide-in-bottom"
+        >
+          <DialogContent ref={createDialogRef}>
+            <DialogHeader>
+              Crear Cancha
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant="link"
+                position="absolute"
+                top={2}
+                right={2}
+                color="gray.500"
+                _hover={{ color: "black" }}
+              >
+                X
+              </Button>
+            </DialogHeader>
+            <DialogBody>
+              <CrearCancha onCreate={handleCreate} />
+            </DialogBody>
+          </DialogContent>
+        </DialogRoot>
+      )}
 
       {/* Dialog para Editar Cancha */}
-      {canchaSeleccionada && (
+      {isEditOpen && (
         <DialogRoot
           open={isEditOpen}
           onOpenChange={setIsEditOpen}
           placement="center"
           motionPreset="slide-in-bottom"
         >
-          <DialogContent>
+          <DialogContent ref={editDialogRef}>
             <DialogHeader>
               Editar Cancha
               <Button
