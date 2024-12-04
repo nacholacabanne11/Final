@@ -1,9 +1,22 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Table } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Table,
+  DialogContent,
+  DialogHeader,
+  DialogBody,
+} from "@chakra-ui/react";
+import { DialogRoot } from "@/components/ui/dialog";
 import axiosInstance from "../../utils/axiosInstance.jsx";
+import CrearCancha from "./CrearCancha";
+import EditarCancha from "./EditarCancha";
 
 const Canchas = () => {
   const [canchas, setCanchas] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
 
   useEffect(() => {
     const fetchCanchas = async () => {
@@ -20,21 +33,48 @@ const Canchas = () => {
     fetchCanchas();
   }, []);
 
-  const handleCreate = () => {
-    console.log("Crear cancha");
+  const handleCreate = async (nuevaCancha) => {
+    try {
+      const response = await axiosInstance.post(
+        "http://127.0.0.1:8000/cancha/Crear_cancha",
+        nuevaCancha
+      );
+      setCanchas((prevCanchas) => [...prevCanchas, response.data]);
+    } catch (error) {
+      console.error("Error al crear la cancha:", error);
+    }
   };
 
-  const handleEdit = (id) => {
-    console.log("Editar cancha con ID:", id);
+  const handleEditOpen = (cancha) => {
+    setCanchaSeleccionada(cancha);
+    setIsEditOpen(true);
   };
 
-  const handleDelete = (id) => {
-    console.log("Eliminar cancha con ID:", id);
+  const handleSave = (canchaActualizada) => {
+    setCanchas((prevCanchas) =>
+      prevCanchas.map((cancha) =>
+        cancha.id === canchaActualizada.id ? canchaActualizada : cancha
+      )
+    );
+    setIsEditOpen(false);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(
+        `http://127.0.0.1:8000/cancha/Eliminar_cancha/${id}`
+      );
+      setCanchas((prevCanchas) =>
+        prevCanchas.filter((cancha) => cancha.id !== id)
+      );
+    } catch (error) {
+      console.error("Error al eliminar la cancha:", error);
+    }
   };
 
   return (
     <Box p={4}>
-      <Button colorScheme="teal" onClick={handleCreate} mb={4}>
+      <Button colorScheme="teal" onClick={() => setIsOpen(true)} mb={4}>
         Crear Cancha
       </Button>
 
@@ -57,7 +97,7 @@ const Canchas = () => {
                 <Button
                   colorScheme="blue"
                   size="sm"
-                  onClick={() => handleEdit(cancha.id)}
+                  onClick={() => handleEditOpen(cancha)}
                 >
                   Editar
                 </Button>
@@ -74,6 +114,64 @@ const Canchas = () => {
           ))}
         </Table.Body>
       </Table.Root>
+
+      {/* Dialog para Crear Cancha */}
+      <DialogRoot
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        placement="center"
+        motionPreset="slide-in-bottom"
+      >
+        <DialogContent>
+          <DialogHeader>
+            Crear Cancha
+            <Button
+              onClick={() => setIsOpen(false)}
+              variant="link"
+              position="absolute"
+              top={2}
+              right={2}
+              color="gray.500"
+              _hover={{ color: "black" }}
+            >
+              X
+            </Button>
+          </DialogHeader>
+          <DialogBody>
+            <CrearCancha onCreate={handleCreate} />
+          </DialogBody>
+        </DialogContent>
+      </DialogRoot>
+
+      {/* Dialog para Editar Cancha */}
+      {canchaSeleccionada && (
+        <DialogRoot
+          open={isEditOpen}
+          onOpenChange={setIsEditOpen}
+          placement="center"
+          motionPreset="slide-in-bottom"
+        >
+          <DialogContent>
+            <DialogHeader>
+              Editar Cancha
+              <Button
+                onClick={() => setIsEditOpen(false)}
+                variant="link"
+                position="absolute"
+                top={2}
+                right={2}
+                color="gray.500"
+                _hover={{ color: "black" }}
+              >
+                X
+              </Button>
+            </DialogHeader>
+            <DialogBody>
+              <EditarCancha cancha={canchaSeleccionada} onSave={handleSave} />
+            </DialogBody>
+          </DialogContent>
+        </DialogRoot>
+      )}
     </Box>
   );
 };

@@ -2,14 +2,12 @@ import { Box, Flex, Text, HStack, Link } from "@chakra-ui/react";
 
 function NavBar() {
   return (
-    <Box bg="teal.500" px={4} shadow="md">
+    <Box bg="teal.500" px={4} shadow="md" position="sticky" top="0" zIndex="10">
       <Flex h={16} alignItems="center" justifyContent="space-between">
-        {/* Logo */}
         <Text fontSize="xl" fontWeight="bold" color="white">
-          Canchas Paddle
+          Canchas Paddle: Final
         </Text>
 
-        {/* Links */}
         <HStack as="nav" gap={8}>
           <Link
             href="/Inicio"
