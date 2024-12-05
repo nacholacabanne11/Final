@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/native-select";
 import { Alert } from "@/components/ui/alert";
 import axiosInstance from "../../utils/axiosInstance";
+import { Text } from "@chakra-ui/react";
 
 function CrearCancha({ onCreate }) {
   const [nombre, setNombre] = useState("");
@@ -57,6 +58,9 @@ function CrearCancha({ onCreate }) {
           onChange={(e) => setNombre(e.target.value)}
           placeholder="Nombre de la cancha"
         />
+
+        <Text>Techada </Text>
+
         <NativeSelectRoot>
           <NativeSelectField
             value={techada ? "True" : "False"}

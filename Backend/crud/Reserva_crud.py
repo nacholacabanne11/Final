@@ -35,7 +35,7 @@ def crear_reserva(db: Session, reserva: ReservaCreate):
 def actualizar_reserva(db:Session, id:int, reserva:Reserva):
   try:
     db_reserva= db.query(Reserva).filter(Reserva.id == id).first()
-    if verificar_reserva(db, reserva.cancha_id, reserva.dia, reserva.hora, reserva.duracion) is not None:
+    if verificar_reserva(db, reserva.cancha_id, reserva.dia, reserva.hora, reserva.duracion, id_reserva=id) is not None:
         raise HTTPException(status_code=400, detail="La reserva ya existe para la cancha, día y hora especificados")
     
     if db_reserva:
@@ -50,6 +50,8 @@ def actualizar_reserva(db:Session, id:int, reserva:Reserva):
         print(f"Error al crear reserva: {e}")
         db.rollback()
         raise e
+
+
     
 def eliminar_reserva(db:Session, id:int):
     db_reserva= db.query(Reserva).filter(Reserva.id == id).first()
@@ -58,12 +60,13 @@ def eliminar_reserva(db:Session, id:int):
         db.commit()
         return db_reserva
     
-
-def verificar_reserva(db: Session, cancha_id: int, dia: str, hora: str, duracion: int):
+    
+def verificar_reserva(db: Session, cancha_id: int, dia: str, hora: str, duracion: int,id_reserva:int=None):
     inicio_nueva = hora.hour * 60 + hora.minute
     fin_nueva = inicio_nueva + duracion
 
     reservas = db.query(Reserva).filter(
+        Reserva.id != id_reserva,
         Reserva.cancha_id == cancha_id,
         Reserva.dia == dia,
         or_(

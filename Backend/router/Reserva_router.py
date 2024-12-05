@@ -34,3 +34,5 @@ def delete_reserva(id: int, db: Session = Depends(get_db)):
     reserva_db= eliminar_reserva(db, id)
     if reserva_db is None:
         raise HTTPException(status_code=404, detail="No se encontro la reserva.No se pudo eliminar")
+    return reserva_db
+
