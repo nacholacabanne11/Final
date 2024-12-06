@@ -141,7 +141,6 @@ const Canchas = () => {
         </Table.Body>
       </Table.Root>
 
-      {/* Dialog para Crear Cancha */}
       {isOpen && (
         <DialogRoot
           open={isOpen}
@@ -149,7 +148,17 @@ const Canchas = () => {
           placement="center"
           motionPreset="slide-in-bottom"
         >
-          <DialogContent ref={createDialogRef}>
+          <DialogContent
+            ref={createDialogRef}
+            position="fixed"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            maxWidth="400px"
+            zIndex="1000"
+            bg="white"
+            boxShadow="lg"
+          >
             <DialogHeader>
               Crear Cancha
               <Button
@@ -171,7 +180,6 @@ const Canchas = () => {
         </DialogRoot>
       )}
 
-      {/* Dialog para Editar Cancha */}
       {isEditOpen && (
         <DialogRoot
           open={isEditOpen}

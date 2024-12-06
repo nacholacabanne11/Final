@@ -5,7 +5,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogBody,
+  Input,
+  Stack,
+  Separator,
 } from "@chakra-ui/react";
+import {
+  NativeSelectField,
+  NativeSelectRoot,
+} from "@/components/ui/native-select";
 import { DialogRoot } from "@/components/ui/dialog";
 import axiosInstance from "../../utils/axiosInstance.jsx";
 import CrearReserva from "./CrearReserva";
@@ -18,24 +25,26 @@ const Reservas = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
+  const [filtroFecha, setFiltroFecha] = useState("");
+  const [filtroCancha, setFiltroCancha] = useState("");
   const createDialogRef = useRef(null);
   const editDialogRef = useRef(null);
 
+  const fetchData = async () => {
+    try {
+      const [reservasResponse, canchasResponse] = await Promise.all([
+        axiosInstance.get("http://127.0.0.1:8000/reserva/Ver_reservas"),
+        axiosInstance.get("http://127.0.0.1:8000/cancha/Ver_canchas"),
+      ]);
+
+      setReservas(reservasResponse.data);
+      setCanchas(canchasResponse.data);
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [reservasResponse, canchasResponse] = await Promise.all([
-          axiosInstance.get("http://127.0.0.1:8000/reserva/Ver_reservas"),
-          axiosInstance.get("http://127.0.0.1:8000/cancha/Ver_canchas"),
-        ]);
-
-        setReservas(reservasResponse.data);
-        setCanchas(canchasResponse.data);
-      } catch (error) {
-        console.error("Error al obtener los datos:", error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -44,40 +53,36 @@ const Reservas = () => {
     return cancha ? cancha.nombre : "Desconocida";
   };
 
-  const handleClickOutside = (event) => {
-    if (
-      isOpen &&
-      createDialogRef.current &&
-      !createDialogRef.current.contains(event.target)
-    ) {
-      setIsOpen(false);
+  const handleFiltrarReservas = async () => {
+    if (!filtroFecha || !filtroCancha) {
+      alert("Por favor, selecciona tanto una fecha como una cancha.");
+      return;
     }
-    if (
-      isEditOpen &&
-      editDialogRef.current &&
-      !editDialogRef.current.contains(event.target)
-    ) {
-      setIsEditOpen(false);
+
+    try {
+      const response = await axiosInstance.get(
+        `http://127.0.0.1:8000/reserva/Filtrar_reserva/${filtroCancha}/${filtroFecha}`
+      );
+      setReservas(response.data);
+    } catch (error) {
+      console.error("Error al filtrar las reservas:", error);
+      setReservas([]);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, isEditOpen]);
+  const handleQuitarFiltro = () => {
+    setFiltroFecha("");
+    setFiltroCancha("");
+    fetchData();
+  };
 
   const handleCreate = async (nuevaReserva) => {
     try {
-      console.log("Datos enviados:", nuevaReserva);
       const response = await axiosInstance.post(
         "http://127.0.0.1:8000/reserva/Crear_reserva",
         nuevaReserva
       );
       setReservas((prevReservas) => [...prevReservas, response.data]);
-      console.log("Reserva creada con éxito:", response.data);
     } catch (error) {
       console.error("Error al crear la reserva:", error);
       throw error;
@@ -103,7 +108,6 @@ const Reservas = () => {
       await axiosInstance.delete(
         `http://127.0.0.1:8000/reserva/Eliminar_reserva/${id}`
       );
-      console.log("Eliminando reserva con id:", id);
       setReservas((prevReservas) =>
         prevReservas.filter((reserva) => reserva.id !== id)
       );
@@ -114,9 +118,45 @@ const Reservas = () => {
 
   return (
     <Box p={4}>
-      <Button colorScheme="teal" onClick={() => setIsOpen(true)} mb={4}>
-        Crear Reserva
-      </Button>
+      <Stack direction="row" spacing={4} align="center" mb={4}>
+        <Box borderWidth={1} borderRadius="md" p={4} w="full">
+          <Stack spacing={4}>
+            <Input
+              type="date"
+              value={filtroFecha}
+              onChange={(e) => setFiltroFecha(e.target.value)}
+              placeholder="Selecciona una fecha"
+            />
+            <NativeSelectRoot>
+              <NativeSelectField
+                value={filtroCancha}
+                onChange={(e) => setFiltroCancha(e.target.value)}
+              >
+                <option value="">Selecciona una cancha</option>
+                {canchas.map((cancha) => (
+                  <option key={cancha.id} value={cancha.id}>
+                    {cancha.nombre}
+                  </option>
+                ))}
+              </NativeSelectField>
+            </NativeSelectRoot>
+            <Stack direction="row" spacing={4}>
+              <Button colorScheme="blue" onClick={handleFiltrarReservas}>
+                Filtrar Reservas
+              </Button>
+              <Button colorScheme="gray" onClick={handleQuitarFiltro}>
+                Quitar Filtro
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+
+        <Button colorScheme="teal" onClick={() => setIsOpen(true)}>
+          Crear Reserva
+        </Button>
+      </Stack>
+
+      <Separator mb={4} borderColor="gray.300" />
 
       <Table.Root size="sm" interactive>
         <Table.Header>
@@ -124,7 +164,7 @@ const Reservas = () => {
             <Table.ColumnHeader>Nombre</Table.ColumnHeader>
             <Table.ColumnHeader>Fecha</Table.ColumnHeader>
             <Table.ColumnHeader>Hora</Table.ColumnHeader>
-            <Table.ColumnHeader>Duración (minutos)</Table.ColumnHeader>
+            <Table.ColumnHeader>Duración</Table.ColumnHeader>
             <Table.ColumnHeader>Teléfono</Table.ColumnHeader>
             <Table.ColumnHeader>Cancha</Table.ColumnHeader>
             <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>
@@ -161,7 +201,6 @@ const Reservas = () => {
         </Table.Body>
       </Table.Root>
 
-      {/* Dialog para Crear Reserva */}
       {isOpen && (
         <DialogRoot
           open={isOpen}
@@ -169,7 +208,17 @@ const Reservas = () => {
           placement="center"
           motionPreset="slide-in-bottom"
         >
-          <DialogContent ref={createDialogRef}>
+          <DialogContent
+            ref={createDialogRef}
+            position="fixed"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            maxWidth="400px"
+            zIndex="1000"
+            bg="white"
+            boxShadow="lg"
+          >
             <DialogHeader>
               Crear Reserva
               <Button
@@ -191,7 +240,6 @@ const Reservas = () => {
         </DialogRoot>
       )}
 
-      {/* Dialog para Editar Reserva */}
       {isEditOpen && (
         <DialogRoot
           open={isEditOpen}
