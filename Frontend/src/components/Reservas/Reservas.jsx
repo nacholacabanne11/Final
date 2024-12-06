@@ -66,6 +66,7 @@ const Reservas = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isEditOpen]);
 
   const handleCreate = async (nuevaReserva) => {
@@ -123,7 +124,7 @@ const Reservas = () => {
             <Table.ColumnHeader>Nombre</Table.ColumnHeader>
             <Table.ColumnHeader>Fecha</Table.ColumnHeader>
             <Table.ColumnHeader>Hora</Table.ColumnHeader>
-            <Table.ColumnHeader>Duración</Table.ColumnHeader>
+            <Table.ColumnHeader>Duración (minutos)</Table.ColumnHeader>
             <Table.ColumnHeader>Teléfono</Table.ColumnHeader>
             <Table.ColumnHeader>Cancha</Table.ColumnHeader>
             <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>

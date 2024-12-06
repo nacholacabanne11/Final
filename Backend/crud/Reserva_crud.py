@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ..models.Reserva import Reserva
 from ..schemas.Reserva import ReservaCreate
 from fastapi import HTTPException
+from datetime import date
 
 
 def obtener_reserva(db: Session):
@@ -83,3 +84,7 @@ def verificar_reserva(db: Session, cancha_id: int, dia: str, hora: str, duracion
     ).first()
 
     return reservas
+
+def filtrar_reserva(db:Session, cancha_id:int,dia:date):
+    db_reservas=db.query(Reserva).filter(Reserva.cancha_id==cancha_id,Reserva.dia==dia).all()
+    return db_reservas
