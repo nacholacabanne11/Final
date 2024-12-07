@@ -12,9 +12,15 @@ def obtener_reserva(db: Session):
     return db.query(Reserva).all()
 
 def obtener_reserva_id(db: Session, id: int):
-    return db.query(Reserva).filter(Reserva.id == id).first()
+    reserva_db= db.query(Reserva).filter(Reserva.id == id).first()
+    if not reserva_db:
+        raise HTTPException(status_code=404, detail=f"No se encontro la reserva con id: {id}")
+    return reserva_db
 
 def crear_reserva(db: Session, reserva: ReservaCreate):
+
+    if(reserva.duracion <= 0 or reserva.duracion > 180):
+        raise ValueError("La duración tiene que ser mayor a 0 y maximo de 3 horas(180 minutos). Ingrese otros valores")
     try:
         if verificar_reserva(db, reserva.cancha_id, reserva.dia, reserva.hora, reserva.duracion) is not None:
             raise HTTPException(status_code=400, detail="La reserva ya existe para la cancha, día y hora especificados")
@@ -36,6 +42,8 @@ def crear_reserva(db: Session, reserva: ReservaCreate):
 def actualizar_reserva(db:Session, id:int, reserva:Reserva):
   try:
     db_reserva= db.query(Reserva).filter(Reserva.id == id).first()
+    if db_reserva is None:
+        raise HTTPException(status_code=404, detail=f"No se encontro la reserva con id : {id}. No se pudo actualizar")
     if verificar_reserva(db, reserva.cancha_id, reserva.dia, reserva.hora, reserva.duracion, id_reserva=id) is not None:
         raise HTTPException(status_code=400, detail="La reserva ya existe para la cancha, día y hora especificados")
     
@@ -56,6 +64,8 @@ def actualizar_reserva(db:Session, id:int, reserva:Reserva):
     
 def eliminar_reserva(db:Session, id:int):
     db_reserva= db.query(Reserva).filter(Reserva.id == id).first()
+    if db_reserva is None:
+        raise HTTPException(status_code=404, detail=f"No se encontro la reserva con id: {id}. No se pudo eliminar")
     if db_reserva: 
         db.delete(db_reserva)
         db.commit()

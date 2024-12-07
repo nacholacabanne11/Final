@@ -50,6 +50,22 @@ function CrearReserva({ onCreate }) {
       return;
     }
 
+    if (duracion < 60 || duracion > 180) {
+      setError("La duración debe estar entre 60 y 180 minutos.");
+      console.error("Error: Duración fuera de rango");
+      return;
+    }
+
+    const [hour, minute] = hora.split(":").map((t) => parseInt(t, 10));
+    const [year, month, day] = dia.split("-").map((t) => parseInt(t, 10));
+    const selectedDate = new Date(year, month - 1, day, hour, minute); // Meses en Date son base 0
+
+    const currentDate = new Date();
+    if (selectedDate < currentDate) {
+      setError("La fecha seleccionada es anterior a la fecha y hora actuales.");
+      console.error("Error: Fecha seleccionada menor que actual");
+      return;
+    }
     const nuevaReserva = {
       dia,
       hora,
