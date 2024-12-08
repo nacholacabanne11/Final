@@ -1,9 +1,18 @@
 from fastapi import FastAPI 
 from .database import engine, Base
 from .router import Cancha_router,Reserva_router 
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Cambia esto al origen que necesites permitir
+    allow_credentials=True,
+    allow_methods=["*"],  # Puedes limitar los métodos permitidos
+    allow_headers=["*"],  # Puedes limitar los encabezados permitidos
+)
 
 def startup():
     Base.metadata.create_all(bind=engine)
