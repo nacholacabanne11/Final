@@ -43,7 +43,7 @@ const EditPage = () => {
   return (
     <div>
       <h2>Editar Cancha</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} id="logg">
         <div>
           <label htmlFor="nombre">Nombre:</label>
           <input

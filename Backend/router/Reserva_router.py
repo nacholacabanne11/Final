@@ -15,7 +15,7 @@ def get_reservas(db: Session = Depends(get_db)):
 def get_reservaID(id: int, db: Session = Depends(get_db)):
     reserva_db= obtener_reserva_id(db, id)
     if reserva_db is None:
-        raise HTTPException(status_code=404, detail="No se encontro la reserva con ese id")
+        raise HTTPException(status_code=404, detail="no existe reserva con ese id")
     return reserva_db
 
 
@@ -27,14 +27,14 @@ def create_reserva(reserva:ReservaCreate, db: Session = Depends(get_db)):
 def update_reserva(id: int, reserva:ReservaUpdate, db: Session = Depends(get_db)):
     reserva_db= actualizar_reserva(db, id, reserva)
     if reserva_db is None:
-        raise HTTPException(status_code=404, detail="No se encontro la reserva. No se pudo actualizar")
+        raise HTTPException(status_code=404, detail="no se pudo actualizar reserva ya que no existe")
     return reserva_db
 
 @router.delete("/Eliminar_reserva/{id}", response_model=Reserva)
 def delete_reserva(id: int, db: Session = Depends(get_db)):
     reserva_db= eliminar_reserva(db, id)
     if reserva_db is None:
-        raise HTTPException(status_code=404, detail="No se encontro la reserva.No se pudo eliminar")
+        raise HTTPException(status_code=404, detail="No se pudo eliminar la reserva ya que no existe")
     
 @router.get("/Filtrar_reserva/{cancha_id}/{dia}", response_model=list[Reserva])
 def filtrar_reservas(cancha_id:int, dia:date,db: Session = Depends(get_db)): 

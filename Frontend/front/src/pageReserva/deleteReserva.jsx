@@ -39,7 +39,7 @@ const DeleteReserva = () => {
   return (
     <div>
       <h2>Eliminar Cancha</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}id="logg"> 
         <div>
           <label htmlFor="id">ID de la reserva:</label>
           <input

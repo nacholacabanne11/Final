@@ -51,7 +51,7 @@ const VerReserva = () => {
     return (
         <div>
             <h2>Ver Reservas</h2>
-            <form onSubmit={handleFiltrar}>
+            <form onSubmit={handleFiltrar} id="logg">
                 <div>
                     <label htmlFor="filtroFecha">Fecha:</label>
                     <input

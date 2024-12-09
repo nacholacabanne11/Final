@@ -16,7 +16,7 @@ def get_canchas(db: Session = Depends(get_db)):
 def get_canchaID(id: int, db: Session = Depends(get_db)):
     cancha_db= obtener_cancha_por_id(db, id)
     if cancha_db is None:
-        raise HTTPException(status_code=404, detail="No se encontro la cancha con ese id")
+        raise HTTPException(status_code=404, detail="No existe una cancha con ese id")
     return cancha_db
 
 
@@ -28,12 +28,12 @@ def create_cancha(cancha:CanchaCreate, db: Session = Depends(get_db)):
 def update_cancha(id: int, cancha:CanchaUpdate, db: Session = Depends(get_db)):
     cancha_db= actualizar_cancha(db, id, cancha)
     if cancha_db is None:
-        raise HTTPException(status_code=404, detail="No se encontro la cancha. No se pudo actualizar")
+        raise HTTPException(status_code=404, detail="No se pudo actualizar una cancha que no existe")
     return cancha_db
 
 @router.delete("/Eliminar_cancha/{id}", response_model=Cancha)
 def delete_cancha(id: int, db: Session = Depends(get_db)):
     cancha_db= eliminar_cancha(db, id)
     if cancha_db is None:
-        raise HTTPException(status_code=404, detail="No se encontro la cancha.No se pudo eliminar")
+        raise HTTPException(status_code=404, detail="no se puede eliminar una cancha que no existe")
     return cancha_db

@@ -67,7 +67,7 @@ const EditReserva = () => {
   return (
     <div>
       <h2>editar Reserva</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}id="logg">
         <div>
           <label htmlFor="id reserva">id reserva:</label>
           <input

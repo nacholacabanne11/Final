@@ -80,7 +80,7 @@ const CreateReserva = () => {
   return (
     <div>
       <h2>Crear Reserva</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}id="logg">
         <div>
           <label htmlFor="dia">Día:</label>
           <input

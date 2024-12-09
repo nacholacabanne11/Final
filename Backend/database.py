@@ -6,7 +6,7 @@ DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost/laboratorio4"
 
 try:
     engine = create_engine(DATABASE_URL)
-    print("Conexión exitosa a la base de datos.")
+    print("Conexión establecida")
 except UnicodeDecodeError as e:
     print("Error de codificación:", e)
 except Exception as e:

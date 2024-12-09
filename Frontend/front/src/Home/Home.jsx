@@ -30,6 +30,7 @@ const Home = () => {
           type="submit"
           value="Canchas"
           onClick={() => navigate(`/canchas`)}
+          className="btn btn-ver"
         />
       </div>
       <div>
@@ -56,7 +57,7 @@ const Home = () => {
           type="submit"
           value="ver reserva"
           onClick={() => navigate(`/ver_reserva`)}
-          className="btn btn-create"
+          className="btn btn-ver"
         />
       </div>
     </div>

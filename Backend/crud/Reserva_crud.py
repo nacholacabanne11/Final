@@ -16,7 +16,7 @@ def obtener_reserva_id(db: Session, id: int):
 def crear_reserva(db:Session, reserva:ReservaCreate):
     try:
         if verificar_reserva(db, reserva.cancha_id, reserva.dia, reserva.hora, reserva.duracion) is not None:
-            raise HTTPException(status_code=400, detail="existe una reserva para ese horario")
+            raise HTTPException(status_code=400, detail="ya existe una reserva, cambie de cancha o de horario reserva")
         
         db_reserva = Reserva(**reserva.model_dump())
         db.add(db_reserva)

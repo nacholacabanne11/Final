@@ -30,7 +30,6 @@ const CrearCancha = () => {
           "http://127.0.0.1:8000/cancha/Crear_cancha",
           nuevaCancha
         );
-        onCreate(nuevaCancha);
         setNombre("");
         setTechada(false);
       }
@@ -41,8 +40,8 @@ const CrearCancha = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form onSubmit={handleSubmit} id="logg">
+      <div >
         <label htmlFor="nombre">Nombre:</label>
         <input
           type="text"
