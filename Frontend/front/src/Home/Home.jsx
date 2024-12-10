@@ -1,11 +1,13 @@
 import React from "react";
 import "./Home.css";
 import { useNavigate } from "react-router";
+import Navbar from "../Components/conteiners/navbar";
 
 const Home = () => {
   const navigate = useNavigate();
   return (
     <div>
+     
       <div>
         <h2>Gestionar Canchas</h2>
         <input

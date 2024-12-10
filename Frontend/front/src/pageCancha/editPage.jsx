@@ -30,7 +30,7 @@ const EditPage = () => {
           `http://127.0.0.1:8000/cancha/Actualizar_cancha/${cancha.id}`,
           updatedCancha
         );
-        onSave(updatedCancha);
+       
         setError("");
         alert("Cancha actualizada exitosamente.");
       }

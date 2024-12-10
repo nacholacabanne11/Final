@@ -20,7 +20,7 @@ const Canchas = () => {
         };
 
         fetchCanchas();
-    }, []); // El array vacío [] asegura que el efecto se ejecute solo una vez al montar el componente
+    }, []); 
 
     return (
         <div>

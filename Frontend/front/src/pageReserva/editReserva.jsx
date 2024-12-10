@@ -131,7 +131,7 @@ const EditReserva = () => {
           />
         </div>
         <div>
-        <label htmlFor="cancha id">Nombre de la cancha:</label>
+        <label htmlFor="cancha id">id de la cancha:</label>
         <input
           type="number"
           id="id cancha"

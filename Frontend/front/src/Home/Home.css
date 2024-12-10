@@ -129,7 +129,7 @@ a:hover {
   background-color: #4caf50;
 }
 #logg {
-    background-color: #1a1a1a; /* Fondo del formulario oscuro */
+    background-color: #1a1a1a; 
     padding: 25px;
     border-radius: 10px;
     text-align: center;
@@ -168,7 +168,6 @@ a:hover {
   input[type="submit"] {
     width: 100%;
     padding: 10px;
-
     border: none;
     border-radius: 5px;
     color: #fff;
@@ -179,7 +178,6 @@ a:hover {
   label{
     color: #fff;
   }
-/* Estilo para tablas */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -218,12 +216,11 @@ table tbody tr:last-of-type {
     border-bottom: 2px solid #4CAF50;
 }
 
-/* Hover */
+
 table tbody tr:hover {
     background-color: #f1f1f1;
 }
 
-/* Ajuste para móvil */
 @media (max-width: 768px) {
     table, table thead, table tbody, table th, table td, table tr {
         display: block;
@@ -246,3 +243,26 @@ table tbody tr:hover {
         text-align: left;
     }
 }
+button.volver-home {
+  background-color: #3498db; /* Azul atractivo */
+  color: white; /* Texto en blanco */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño del texto */
+  font-weight: bold; /* Texto en negrita */
+  cursor: pointer; /* Cambiar el cursor al pasar */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animación suave */
+}
+
+button.volver-home:hover {
+  background-color: #2980b9; /* Azul más oscuro al pasar */
+  transform: scale(1.05); /* Ligeramente más grande al pasar */
+}
+
+button.volver-home:active {
+  background-color: #1f6391; /* Azul aún más oscuro al hacer clic */
+  transform: scale(0.95); /* Efecto de pulsación */
+}
+
+

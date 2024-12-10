@@ -133,7 +133,7 @@ const CreateReserva = () => {
             required
           />
         </div>
-        <label htmlFor="nombre cancha">Nombre de la cancha:</label>
+        <label htmlFor="id cancha">id de la cancha:</label>
         <input
           type="text"
           id="id cancha"
